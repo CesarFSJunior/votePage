@@ -2,6 +2,9 @@ package com.cesarFrancisco.votePage.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,8 +13,12 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_votesItem")
+@NoArgsConstructor
+@Getter
+@Setter
 public class VoteItem implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVoteItem;
@@ -21,9 +28,9 @@ public class VoteItem implements Serializable {
     @JsonIgnore
     private Vote vote;
     private int votes = 0;
-
-    public VoteItem() {
-    }
+    @ManyToMany
+    @JoinTable(name = "tb_user_vote_item")
+    private List<User> users = new ArrayList<>();
 
     public VoteItem(Long idVoteItem, String name, Vote vote) {
         this.idVoteItem = idVoteItem;
@@ -31,58 +38,13 @@ public class VoteItem implements Serializable {
         this.vote = vote;
     }
 
-    public Long getIdVoteItem() {
-        return idVoteItem;
-    }
-
-    public void setIdVoteItem(Long idVoteItem) {
-        this.idVoteItem = idVoteItem;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Vote getVote() {
-        return vote;
-    }
-
-    public void setVote(Vote vote) {
-        this.vote = vote;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    public void addUsers(User user) {
+    public void addUser(User user) {
         users.add(user);
-    }
-
-    public int getVotes() {
-        return votes;
-    }
-
-    public void setVotes(int votes) {
-        this.votes = votes;
     }
 
     public void addVote() {
         votes++;
     }
-
-    @ManyToMany
-    @JoinTable(name = "tb_user_vote_item")
-    private List<User> users = new ArrayList<>();
-
 
     @Override
     public boolean equals(Object o) {

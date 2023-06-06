@@ -46,8 +46,8 @@ public class TestConfig implements CommandLineRunner {
         VoteItem item1 = new VoteItem(null, "item1", vot1);
         VoteItem item2 = new VoteItem(null, "item2", vot1);
 
-        item1.addUsers(user);
-        item2.addUsers(user);
+        item1.addUser(user);
+        item2.addUser(user);
         vot1.addItem(item1);
         vot1.addItem(item2);
 

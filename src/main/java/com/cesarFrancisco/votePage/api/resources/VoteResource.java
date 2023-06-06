@@ -1,10 +1,9 @@
 package com.cesarFrancisco.votePage.api.resources;
 
 import com.cesarFrancisco.votePage.api.dto.VoteDto;
-import com.cesarFrancisco.votePage.api.mappers.VoteMapper;
 import com.cesarFrancisco.votePage.api.insertDto.VoteInsertDto;
+import com.cesarFrancisco.votePage.api.mappers.VoteMapper;
 import com.cesarFrancisco.votePage.domain.entities.Vote;
-import com.cesarFrancisco.votePage.domain.entities.VoteItem;
 import com.cesarFrancisco.votePage.domain.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +57,7 @@ public class VoteResource {
 
     @PutMapping(value = "/{id}/{item}")
     public ResponseEntity<Vote> addVote(@PathVariable Long id, @PathVariable String item) {
+
         Vote vote = voteService.addVote(id, item);
 
         return ResponseEntity.ok().body(vote);

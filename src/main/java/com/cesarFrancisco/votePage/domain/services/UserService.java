@@ -4,7 +4,9 @@ import com.cesarFrancisco.votePage.domain.entities.User;
 import com.cesarFrancisco.votePage.domain.repositories.UserRepository;
 import com.cesarFrancisco.votePage.exceptions.ObjectNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,7 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     UserRepository userRepository;
@@ -24,15 +29,26 @@ public class UserService {
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new ObjectNotFoundException("User not found");
         }
 
         return user.get();
     }
 
+    public User findByEmail(String email) {
+        Optional<User> optUser = userRepository.findByEmail(email);
+
+        if (optUser.isEmpty()) {
+            throw new ObjectNotFoundException("User not found");
+        }
+
+        return optUser.get();
+    }
+
     public User insert(User user) {
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user.setCreatedAt(new Date());
         return userRepository.save(user);
@@ -43,7 +59,7 @@ public class UserService {
             User oldUser = userRepository.getReferenceById(id);
             updateUser(oldUser, user);
             return userRepository.save(oldUser);
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new ObjectNotFoundException("User not found");
         }
     }

@@ -6,6 +6,7 @@ import com.cesarFrancisco.votePage.domain.entities.VoteItem;
 import com.cesarFrancisco.votePage.domain.repositories.VoteRepository;
 import com.cesarFrancisco.votePage.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,7 +19,11 @@ public class VoteService {
     @Autowired
     VoteRepository voteRepository;
 
+    @Autowired
+    UserService userService;
+
     public List<Vote> findAll() {
+
         return voteRepository.findAll();
     }
 
@@ -28,6 +33,7 @@ public class VoteService {
         if(vote.isEmpty()) {
             throw new ObjectNotFoundException("Vote not found");
         }
+
 
         return vote.get();
     }
@@ -46,6 +52,9 @@ public class VoteService {
     public Vote addVote(Long id, String item) {
 
         // TODO set user to voteItem
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
         Optional<Vote> optVote = voteRepository.findById(id);
 
         if (optVote.isEmpty()) {
@@ -57,6 +66,7 @@ public class VoteService {
         for (VoteItem voteItem : vote.getItems()) {
             if (voteItem.getName().equals(item)) {
                 voteItem.addVote();
+                voteItem.addUser(userService.findByEmail(email));
             }
         }
 

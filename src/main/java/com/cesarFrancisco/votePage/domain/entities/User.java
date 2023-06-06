@@ -1,6 +1,10 @@
 package com.cesarFrancisco.votePage.domain.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -9,6 +13,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_user")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -22,66 +30,6 @@ public class User implements Serializable {
     private String password;
     private Date birthday;
     private Date createdAt;
-
-    public User() {
-    }
-
-    public User(Long id, String name, String email, String password, Date birthday, Date createdAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.birthday = birthday;
-        this.createdAt = createdAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
 
     @Override
     public boolean equals(Object o) {

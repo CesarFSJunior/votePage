@@ -1,6 +1,9 @@
 package com.cesarFrancisco.votePage.domain.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -10,6 +13,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_votes")
+@NoArgsConstructor
+@Getter
+@Setter
 public class Vote implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -24,45 +30,10 @@ public class Vote implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vote")
     private List<VoteItem> items = new ArrayList<>();
 
-    public Vote() {
-    }
-
     public Vote(Long id, String title, User creator) {
         this.id = id;
         this.title = title;
         this.creator = creator;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
-    public List<VoteItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<VoteItem> items) {
-        this.items = items;
     }
 
     public void addItem(VoteItem item) {
