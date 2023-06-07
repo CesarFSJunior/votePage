@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.naming.AuthenticationException;
-import java.time.LocalDate;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -39,7 +37,7 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandardError> objectNotFound(AuthenticationException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        String error = "Vote Error";
+        String error = "Authentication Exception";
         String path = request.getRequestURI();
 
         StandardError err = new StandardError(System.currentTimeMillis(), status.value(), error, path, e.getMessage());

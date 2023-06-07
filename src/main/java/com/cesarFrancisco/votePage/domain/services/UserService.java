@@ -1,14 +1,20 @@
 package com.cesarFrancisco.votePage.domain.services;
 
+import com.cesarFrancisco.votePage.api.dto.AuthenticationDto;
+import com.cesarFrancisco.votePage.configs.JwtUtils;
 import com.cesarFrancisco.votePage.domain.entities.User;
 import com.cesarFrancisco.votePage.domain.repositories.UserRepository;
 import com.cesarFrancisco.votePage.exceptions.ObjectNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +24,8 @@ import java.util.Optional;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     @Autowired
     UserRepository userRepository;
@@ -71,6 +79,23 @@ public class UserService {
 
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public String login(AuthenticationDto request) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+        } catch (AuthenticationException e) {
+            throw new com.cesarFrancisco.votePage.exceptions.AuthenticationException(e.getMessage());
+        }
+        Optional<User> optUser = userRepository.findByEmail(request.email());
+
+        if (optUser.isEmpty()) {
+            throw new ObjectNotFoundException("User not found");
+        }
+
+        User user = optUser.get();
+
+        return jwtUtils.generateToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Collections.emptyList()));
     }
 
 

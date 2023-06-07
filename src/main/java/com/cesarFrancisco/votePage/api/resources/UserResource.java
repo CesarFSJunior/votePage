@@ -88,9 +88,8 @@ public class UserResource {
     @PostMapping(value = "/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody AuthenticationDto request) {
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        User user = userService.findByEmail(request.email());
-        String token = jwtUtils.generateToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Collections.emptyList()));
+        String token = userService.login(request);
+
         Map<String, String> map = new HashMap<>();
         map.put("Token", token);
         return ResponseEntity.ok(map);
