@@ -21,7 +21,9 @@ import java.util.function.Function;
 public class JwtUtils {
 
     //TODO implemet enviroment variable to the password
-    final String jwtSigningKey = "0123456789abcdef0123456789abcdef0123456789abcdef";
+
+    @Value("${JwtPassword}")
+    String jwtSigningKey;
 
     private String createToken(Map<String,Object> claims, UserDetails userDetails) {
         return Jwts

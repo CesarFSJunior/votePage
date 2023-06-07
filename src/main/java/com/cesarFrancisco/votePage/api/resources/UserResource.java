@@ -9,6 +9,7 @@ import com.cesarFrancisco.votePage.domain.entities.User;
 import com.cesarFrancisco.votePage.domain.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -93,10 +94,5 @@ public class UserResource {
         Map<String, String> map = new HashMap<>();
         map.put("Token", token);
         return ResponseEntity.ok(map);
-    }
-
-    @GetMapping(value = "test")
-    public ResponseEntity<String> teste() {
-        return ResponseEntity.ok("${JwtSecret}");
     }
 }
