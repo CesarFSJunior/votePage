@@ -5,6 +5,7 @@ import com.cesarFrancisco.votePage.domain.entities.Vote;
 import com.cesarFrancisco.votePage.domain.entities.VoteItem;
 import com.cesarFrancisco.votePage.domain.repositories.VoteRepository;
 import com.cesarFrancisco.votePage.exceptions.ObjectNotFoundException;
+import com.cesarFrancisco.votePage.exceptions.VoteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -43,15 +44,16 @@ public class VoteService {
             item.setVote(vote);
         }
 
-        // TODO set creator interactive
-        vote.setCreator(new User(1L, "Cesar", "cesar@hotmail.com", "201103Ju", null, new Date()));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userService.findByEmail(email);
+
+        vote.setCreator(user);
 
         return voteRepository.save(vote);
     }
 
     public Vote addVote(Long id, String item) {
-
-        // TODO set user to voteItem
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -62,11 +64,18 @@ public class VoteService {
         }
 
         Vote vote = optVote.get();
+        User user = userService.findByEmail(email);
+
 
         for (VoteItem voteItem : vote.getItems()) {
+            for (User votingUser : voteItem.getUsers()) {
+                if (votingUser.equals(user)) {
+                    throw new VoteException("User already voted");
+                }
+            }
             if (voteItem.getName().equals(item)) {
                 voteItem.addVote();
-                voteItem.addUser(userService.findByEmail(email));
+                voteItem.addUser(user);
             }
         }
 

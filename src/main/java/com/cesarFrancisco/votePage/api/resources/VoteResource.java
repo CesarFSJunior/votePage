@@ -56,11 +56,12 @@ public class VoteResource {
     }
 
     @PutMapping(value = "/{id}/{item}")
-    public ResponseEntity<Vote> addVote(@PathVariable Long id, @PathVariable String item) {
+    public ResponseEntity<VoteDto> addVote(@PathVariable Long id, @PathVariable String item) {
 
         Vote vote = voteService.addVote(id, item);
+        VoteDto voteDto = mapper.toVoteDto(vote);
 
-        return ResponseEntity.ok().body(vote);
+        return ResponseEntity.ok().body(voteDto);
     }
 
     @DeleteMapping(value = "/{id}")

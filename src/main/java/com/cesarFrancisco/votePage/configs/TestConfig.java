@@ -1,5 +1,6 @@
 package com.cesarFrancisco.votePage.configs;
 
+import com.cesarFrancisco.votePage.api.resources.UserResource;
 import com.cesarFrancisco.votePage.domain.entities.User;
 import com.cesarFrancisco.votePage.domain.entities.Vote;
 import com.cesarFrancisco.votePage.domain.entities.VoteItem;
@@ -16,10 +17,12 @@ import org.springframework.context.annotation.Profile;
 public class TestConfig implements CommandLineRunner {
 
     @Autowired
+    private UserResource userResource;
+    @Autowired
     private UserService userService;
 
     @Autowired
-    private VoteService voteService;
+    private VoteRepository voteService;
 
     @Autowired
     private VoteRepository voteRepository;
@@ -37,10 +40,8 @@ public class TestConfig implements CommandLineRunner {
         Vote vot1 = new Vote(null, "Votação1", user);
         Vote vot2 = new Vote(null, "Votação2", user2);
 
-        new User();
-
-        voteService.insert(vot1);
-        voteService.insert(vot2);
+        voteService.save(vot1);
+        voteService.save(vot2);
 
 
         VoteItem item1 = new VoteItem(null, "item1", vot1);

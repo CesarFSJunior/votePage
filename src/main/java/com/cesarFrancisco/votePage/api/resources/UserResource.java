@@ -7,14 +7,11 @@ import com.cesarFrancisco.votePage.api.mappers.UserMapper;
 import com.cesarFrancisco.votePage.configs.JwtUtils;
 import com.cesarFrancisco.votePage.domain.entities.User;
 import com.cesarFrancisco.votePage.domain.services.UserService;
-import com.cesarFrancisco.votePage.exceptions.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -39,20 +36,13 @@ public class UserResource {
     @Autowired
     UserMapper mapper;
 
-    /*@GetMapping
+    @GetMapping
     public ResponseEntity<List<UserDto>> findAll() {
         List<User> users = userService.findAll();
 
         List<UserDto> usersDto = users.stream().map(user -> mapper.toUserDto(user)).toList();
 
         return ResponseEntity.ok().body(usersDto);
-    }*/
-
-    @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        List<User> users = userService.findAll();
-
-        return ResponseEntity.ok().body(users);
     }
 
     @GetMapping(value = "/{id}")
@@ -95,33 +85,19 @@ public class UserResource {
         return ResponseEntity.noContent().build();
     }
 
-    /*@PostMapping(value = "/login")
-    public ResponseEntity<UserDto> login(@RequestBody UserInsertDto userInsertDto) {
-
-        User user = mapper.toUser(userInsertDto);
-
-        user = userService.login(user);
-
-        if (user == null) throw new ObjectNotFoundException("Failed");
-
-        UserDto userDto = mapper.toUserDto(user);
-
-        return ResponseEntity.ok().body(userDto);
-
-    }*/
-
     @PostMapping(value = "/login")
-    public ResponseEntity<String> login(@RequestBody AuthenticationDto request) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody AuthenticationDto request) {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-         User user = userService.findByEmail(request.email());
+        User user = userService.findByEmail(request.email());
         String token = jwtUtils.generateToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Collections.emptyList()));
-
-        return ResponseEntity.ok(token);
+        Map<String, String> map = new HashMap<>();
+        map.put("Token", token);
+        return ResponseEntity.ok(map);
     }
 
-    /*@GetMapping(value = "test")
-    public String teste() {
-        return "${JwtSecret}";
-    }*/
+    @GetMapping(value = "test")
+    public ResponseEntity<String> teste() {
+        return ResponseEntity.ok("${JwtSecret}");
+    }
 }
