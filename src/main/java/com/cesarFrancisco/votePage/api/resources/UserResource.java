@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -56,7 +57,7 @@ public class UserResource {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> insert(@RequestBody UserInsertDto userInsertDto) {
+    public ResponseEntity<UserDto> insert(@RequestBody @Validated UserInsertDto userInsertDto) {
 
         User user = mapper.toUser(userInsertDto);
 

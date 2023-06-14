@@ -147,4 +147,102 @@ public class UsersTest {
 
     }
 
+    @Test
+    @DisplayName("It should not allow a user to delete another person account")
+    public void deleteAnotherPersonAccount() throws Exception {
+
+        UserInsertDto secondUser = new UserInsertDto("Andre", "andre@hotmail.com", "9876", null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(secondUser)))
+                .andReturn();
+
+        MvcResult secondUserTokenResponse = mockMvc.perform(MockMvcRequestBuilders.post("/users/login")
+                .content(mapper.writeValueAsString(secondUser))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+
+        String secondUserToken = secondUserTokenResponse.getResponse().getContentAsString().split("\"")[3];
+
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/" + genericUserId)
+                .header("Authorization", "Bearer " + secondUserToken))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @DisplayName("It should not allow a user to update another person account")
+    public void updateAnotherPersonAccount() throws Exception {
+
+        UserInsertDto secondUser = new UserInsertDto("Andre", "andre@hotmail.com", "9876", null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(secondUser)))
+                .andReturn();
+
+        MvcResult secondUserTokenResponse = mockMvc.perform(MockMvcRequestBuilders.post("/users/login")
+                        .content(mapper.writeValueAsString(secondUser))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+
+        String secondUserToken = secondUserTokenResponse.getResponse().getContentAsString().split("\"")[3];
+
+        UserInsertDto secondUserUpdateDto = new UserInsertDto("Andre2", "andre2@hotmail.com", null, null);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/users/" + genericUserId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(secondUserUpdateDto))
+                .header("Authorization", "Bearer " + secondUserToken))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @DisplayName("Should not create a user without a Name")
+    public void createAUserWithoutEmail() throws Exception {
+
+        UserInsertDto userInsertDto = new UserInsertDto(null, "mario@gmail.com", "123124", null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .content(mapper.writeValueAsString(userInsertDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @DisplayName("Should not create a user without a email")
+    public void createAUserWithoutName() throws Exception {
+
+        UserInsertDto userInsertDto = new UserInsertDto("mario", null, "123124", null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .content(mapper.writeValueAsString(userInsertDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @DisplayName("Should not create a user without a password")
+    public void createAUserWithoutPassword() throws Exception {
+
+        UserInsertDto userInsertDto = new UserInsertDto("mario", "mario@gmail.com", null, null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .content(mapper.writeValueAsString(userInsertDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+
+    }
 }

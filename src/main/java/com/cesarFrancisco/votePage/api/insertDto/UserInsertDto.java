@@ -1,10 +1,22 @@
 package com.cesarFrancisco.votePage.api.insertDto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Date;
 
 public class UserInsertDto {
+
+    @NotNull
+    @NotBlank
     private String name;
+
+    @NotBlank
+    @NotNull
     private String email;
+
+    @NotNull
+    @NotBlank
     private String password;
     private Date birthday;
 

@@ -1,5 +1,6 @@
 package com.cesarFrancisco.votePage.domain.entities;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
